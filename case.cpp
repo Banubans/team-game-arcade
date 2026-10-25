@@ -15,9 +15,24 @@ void printHUD() {
 resources << "\n";
  std::cout << "--------------------------------------------------------\n";
 }
-// -------------------------------------------------------------
-// [МЕСТО ДЛЯ ФУНКЦИЙ РАЗРАБОТЧИКОВ ИЗ PULL REQUEST'ОВ]
-// -------------------------------------------------------------
+void attackBanditCamp() {
+ std::cout << "\nВы отправились в рейд на лагерь бандитов...\n";
+ int diceRoll = rand() % 20 + 1;
+ std::cout << "Бросок к20: " << diceRoll << "\n";
+ if (diceRoll >= 11) {
+  int scoreReward = rand() % 301 + 200;
+  int resourceReward = rand() % 31 + 20;
+  score += scoreReward;
+  resources += resourceReward;
+  std::cout << "Победа! Вы получили " << scoreReward << " очков и "
+            << resourceReward << " серебрянных монет.\n";
+ } else {
+  int damage = rand() % 21 + 30;
+  hp -= damage;
+  if (hp < 0) hp = 0;
+  std::cout << "Засада! Вы потеряли " << damage << " HP.\n";
+ }
+}
 int main() {
 SetConsoleOutputCP(CP_UTF8);
 SetConsoleCP(CP_UTF8);
@@ -26,7 +41,7 @@ SetConsoleCP(CP_UTF8);
  std::cout << ">>> ЗАПУСК СИМУЛЯЦИИ: БИТВА ЗА РЕКОРД <<<\n";
  while (hp > 0) {
  printHUD();
- std::cout << "1. Рискованная операция (Высокая награда / Высокийриск)\n";
+ std::cout << "1. Напасть на лагерь бандитов (Проверка к20)\n";
  std::cout << "2. База / Лагерь (Лечение и обмен ресурсов)\n";
  std::cout << "3. Особое событие / Рулетка удачи\n";
  std::cout << "0. Сдаться и зафиксировать счет\n";
@@ -34,9 +49,8 @@ SetConsoleCP(CP_UTF8);
  if (!(std::cin >> choice)) break;
  switch (choice) {
  case 1:
- // [РАЗРАБОТЧИК 1: ПОДКЛЮЧИТ ФУНКЦИЮ РИСКА (ISSUE #1)]
- std::cout << "\n[!] Модуль риска еще в разработке (Issue#1).\n";
-    break;
+ attackBanditCamp();
+ break;
  case 2:
  // [РАЗРАБОТЧИК 2: ПОДКЛЮЧИТ МОДУЛЬ ОТХИЛА (ISSUE #2)]
  std::cout << "\n[!] Модуль лагеря еще в разработке (Issue#2).\n";
