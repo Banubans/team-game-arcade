@@ -1,19 +1,22 @@
 #include <iostream>
 #include <string>
+#include <windows.h>
+#include <conio.h>
 #include <cstdlib>
 #include <ctime>
-#include <windows.h>
+
 // Состояние игры (базовые переменные)
 int hp = 100;
 int resources = 50; // Деньги / Мана / Патроны / Крышки
-int score = 0; // Очки выживания (цель — рекорд)
+int score = 0;      // Очки выживания (цель — рекорд)
 int turn = 1;
-void printHUD() {
- std::cout << "\n================ [ХОД: " << turn << " | СЧЕТ: " << score
-<< "] ================\n";
- std::cout << "❤️ Здоровье: " << hp << "/100 |  Ресурсы: " <<
-resources << "\n";
- std::cout << "--------------------------------------------------------\n";
+
+void printHUD()
+{
+    std::cout << "\n================ [ХОД: " << turn << " | СЧЕТ: " << score
+              << "] ================\n";
+    std::cout << "❤️  Здоровье: " << hp << "/100 |  Ресурсы: " << resources << "\n";
+    std::cout << "--------------------------------------------------------\n ";
 }
 void attackBanditCamp() {
  std::cout << "\nВы отправились в рейд на лагерь бандитов...\n";
@@ -32,6 +35,36 @@ void attackBanditCamp() {
   if (hp < 0) hp = 0;
   std::cout << "Засада! Вы потеряли " << damage << " HP.\n";
  }
+}
+
+int d20() // Бросок кубика при выборе case 3
+{
+    int random_number = 1 + std::rand() % 20;
+    return random_number;
+}
+
+int d4() // Бросок 4-гранника
+{
+    int random_number = 1 + std::rand() % 4;
+    return random_number;
+}
+
+int d6() // бросок кубика
+{
+    int random_number = 1 + std::rand() % 6;
+    return random_number;
+}
+
+int d8() // бросок 8-гранника
+{
+    int random_number = 1 + std::rand() % 8;
+    return random_number;
+}
+
+int bobr()
+{
+    int random_number = 1 + std::rand() % 4;
+    return random_number;
 }
 int main() {
 SetConsoleOutputCP(CP_UTF8);
@@ -56,9 +89,254 @@ SetConsoleCP(CP_UTF8);
  std::cout << "\n[!] Модуль лагеря еще в разработке (Issue#2).\n";
  break;
  case 3:
- // [РАЗРАБОТЧИК 3: ПОДКЛЮЧИТ РУЛЕТКУ/БОССА (ISSUE #3)]
- std::cout << "\n[!] Модуль событий еще в разработке (Issue#3).\n";
- break;
+        {
+            std::cout << "Бросьте d20 для определения случайного события.\n";
+            std::cout << "Бросить кубик? Да (Y) / Нет, вернуться в главное меню (N): ";
+            std::string x;
+            std::cin >> x;
+            if (x == "Y" || x == "y")
+            {
+                int x = d20();
+                std::cout << "Выпало: " << x << " \n";
+                std::cout << " \n";
+                if (x == 1)
+                {
+                    std::cout << "КРИТИЧЕСКАЯ НЕУДАЧА!!! Это тоже в своём роде удача!\n";
+                    std::cout << "Вы обнаружили на себе клеща, переносящего ВИЧ-инфекцию.\n";
+                    std::cout << "Она очень быстро развилась, вы тяжело больны.\n";
+                    std::cout << "У вас остаётся 1 хит.\n";
+                    hp = 1;
+                }
+
+                if (x > 1 && x <= 7)
+                {
+                    std::cout << "Вы встретили злого бобра.\n";
+                    // Бобр, класс брони = 14, хиты = 30.
+                    /*Способности:
+                    Оглушающий писк - наносит 1d4 психического урона;
+                    Укус - наносит 1d6 + 60 урона
+                    Удар лапой - 1 урон
+                    Мультиатака - 1d8 + 2 урона*/
+                    std::cout << "Он недовольно на вас смотрит.\n";
+                    std::cout << "Похоже, вы бесите его только одним своим видом.\n";
+                    int hp_bobr = 30;
+                    int kd_bobr = 14;
+                    int kd = 10 + d6() - d4();
+                    while (hp_bobr > 0 && hp > 0)
+                    {
+                        _getch();
+                        std::cout << "\n=== Ход бобра ===\n";
+                        std::cout << "Бобр атакует!\n";
+
+                        int bbr = bobr();
+                        if (bbr == 1)
+                        {
+                            std::cout << "Бобр издаёт истошный визг\n";
+                            int ur = d4();
+                            hp -= ur;
+                            std::cout << "Его визг пронзил ваш разум.\n";
+                            std::cout << "Вам кажется, что земля уходит из-под ног, в ушах звенит\n";
+                            std::cout << "Вы получаете " << ur << " психического урона.\n";
+                            if (hp <= 0)
+                                break;
+                        }
+
+                        else if (bbr == 2)
+                        {
+                            std::cout << "Бобр прыгает на вас и кусает.\n";
+
+                            int atkRoll_bobr = d20();
+
+                            if (atkRoll_bobr >= kd)
+                            {
+                                _getch();
+                                int ur = d6() + 50;
+                                hp -= ur;
+                                std::cout << "Острые зубки Бобра впиваются в вас.\n";
+                                std::cout << "Вы получаете " << ur << " урона.\n";
+                                if (hp <= 0)
+                                    break;
+                            }
+
+                            else
+                            {
+                                std::cout << "Вам удаётся увернуться от укуса!\n";
+                            }
+                        }
+                        else if (bbr == 3)
+                        {
+                            std::cout << "Бобр совершает самую сильную атаку за свою короткую бобриную жизнь.\n";
+                            std::cout << "От неё нельзЯ увернуться, это ЛЕГЕНДАРНОЕ ДЕЙСТВИЕ\n";
+                            hp -= 1;
+                            std::cout << "Вы получаете 1 урон.\n";
+                            if (hp <= 0)
+                                break;
+                        }
+                        else if (bbr == 4)
+                        {
+                            std::cout << "Бобр переходит в ярость и атакует мультиатакой!\n";
+                            int atkRoll_bobr = d20();
+
+                            if (atkRoll_bobr >= kd)
+                            {
+                                int ur = d8() + 2;
+                                hp -= ur;
+                                std::cout << "Серия быстрых ударов обрушивается на вас!\n";
+                                std::cout << "Вы получаете " << ur << " урона.\n";
+                                if (hp <= 0)
+                                    break;
+                            }
+                            else
+                            {
+                                std::cout << "Вы блокируете серию ударов!\n";
+                            }
+                        }
+                        _getch();
+                        std::cout << "\n=== Ваш ход ===\n";
+                        std::cout << "Ваши хиты: " << hp << " | Хиты бобра: " << hp_bobr << "\n";
+                        std::cout << "1. Атаковать\n";
+                        std::cout << "2. Защищаться (пропустить ход, восстановить 1d4 хитов)\n";
+                        std::cout << "Выберите действие: ";
+
+                        int choice;
+                        std::cin >> choice;
+
+                        if (choice == 1)
+                        {
+                            std::cout << "Вы атакуете бобра!\n";
+                            int attack_roll = d20();
+                            std::cout << "Бросок атаки: " << attack_roll << "\n";
+
+                            if (attack_roll >= kd_bobr)
+                            {
+                                int ur = d8() + 2;
+                                hp_bobr -= ur;
+                                std::cout << "Попадание! Вы наносите " << ur << " урона.\n";
+                            }
+                            else
+                            {
+                                std::cout << "Промах! Бобр ловко уворачивается.\n";
+                            }
+                        }
+                        else if (choice == 2)
+                        {
+                            std::cout << "Вы принимаете защитную стойку.\n";
+                            _getch();
+                            int heal = d4();
+                            hp += heal;
+                            std::cout << "Вы восстанавливаете " << heal << " хитов.\n";
+                        }
+
+                        if (hp_bobr <= 0)
+                        {
+                            std::cout << "\nБобр издаёт последний писк и падает замертво.\n";
+                            std::cout << "Вы победили злого бобра!\n";
+                            break;
+                        }
+                    }
+                    if (x > 7 && x <= 10)
+                    {
+                        std::cout << "Гуляя по лесочку, вы встретили странный дуб.\n";
+                        std::cout << "Он предложил сыграть в игру.\n";
+                        if (resources > 0)
+                        {
+                            std::cout << "Играть (Y) / Уйти (N): ";
+                            std::string x;
+                            std::cin >> x;
+                            if (x == "Y" || x == "y")
+                            {
+                                int chans = d20();
+                                if (chans == 20)
+                                {
+                                    int x = d20() + 15;
+                                    std::cout << "ПОБЕДА! Вы выиграли " << x << " серебряных монет\n";
+                                    resources += x;
+                                }
+
+                                else if (chans >= 15)
+                                {
+                                    int x = d20() + 5;
+                                    std::cout << "ПОБЕДА! Вы выиграли " << x << " серебряных монет\n";
+                                    resources += x;
+                                }
+
+                                else if (chans > 10)
+                                {
+                                    int x = d8() + 5;
+                                    std::cout << "ПОБЕДА! Вы выиграли " << x << " серебряных монет\n";
+                                    resources += x;
+                                }
+
+                                else if (chans == 10)
+                                {
+                                    int x = d4();
+                                    std::cout << "ПРОИГРЫШ! Вы проиграли " << x << " серебряных монет\n";
+                                    if (resources >= x)
+                                        resources -= x;
+                                    else
+                                        resources = 0;
+                                }
+
+                                else if (chans > 5)
+                                {
+                                    int x = d8();
+                                    std::cout << "ПРОИГРЫШ! Вы проиграли " << x << " серебряных монет\n";
+                                    if (resources >= x)
+                                        resources -= x;
+                                    else
+                                        resources = 0;
+                                }
+
+                                else if (chans > 1)
+                                {
+                                    int x = d20();
+                                    std::cout << "ПРОИГРЫШ! Вы проиграли " << x << " серебряных монет\n";
+                                    if (resources >= x)
+                                        resources -= x;
+                                    else
+                                        resources = 0;
+                                }
+
+                                else if (chans == 1)
+                                {
+                                    std::cout << "ПРОИГРЫШ! Вы проиграли все монеты!\n";
+                                    resources = 0;
+                                }
+                            }
+                            else if (x == "N" || x == "n")
+                                break;
+                            else
+                                std::cout << "Выберите Y/N.\n";
+                        }
+                    }
+                }
+
+                if (x > 10 && x < 15)
+                {
+                    std::cout << "Ничего не происходит.\n";
+                }
+
+                if (x > 15 && x < 20)
+                {
+                    std::cout << "Прогуливаясь по лесу, вы нашли труп.\n";
+                    std::cout << "Обыскав его, вы нашли зелье лечения и монеты.\n";
+                    std::cout << "+10хп, +10 монет.\n";
+                }
+
+                if (x == 20)
+                {
+                    std::cout << "Критическая удача!! По пути вас ограбил и избил разбойник.\n";
+                    std::cout << "-30 хп, -монеты.\n";
+                    resources = 0;
+                    hp -= 30;
+                }
+            }
+            else if (x == "N" || x == "n")
+                break;
+            else
+                std::cout << "Введите Y или N\n";
+            break;
+        }
  case 0:
  hp = 0;
  break;
@@ -74,4 +352,4 @@ SetConsoleCP(CP_UTF8);
  }
  std::cout << "\n💀 ИГРА ОКОНЧЕНА. Ваш итоговый рекорд: " << score << "очков!\n";
  return 0;
-}
+
